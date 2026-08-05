@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/golang-jwt/jwt/v5"
 	"hospital-middleware/internal/dto"
 	"hospital-middleware/internal/model"
 	"hospital-middleware/internal/repository"
@@ -74,18 +73,13 @@ func (s *staffService) Login(c context.Context, req dto.StaffLoginRequest) (*dto
 	}
 
 	expriationTime := time.Now().Add(24 * time.Hour)
-	claims := &token.StaffClaims{
-		StaffID:    staff.ID,
-		HospitalID: staff.HospitalID,
-		Username:   staff.Username,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expriationTime),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
-	}
-
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := jwtToken.SignedString([]byte(s.jwtSecret))
+	tokenString, err := token.GenerateToken(
+		staff.ID,
+		staff.HospitalID,
+		staff.Username,
+		s.jwtSecret,
+		expriationTime,
+	)
 	if err != nil {
 		return nil, err
 	}

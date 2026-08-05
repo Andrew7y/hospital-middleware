@@ -5,13 +5,19 @@ import (
 	"time"
 )
 
-func GenerateToken(staffID, hospitalID uint, username, jwtSecret string) (string, error) {
+func GenerateToken(
+	staffID,
+	hospitalID uint,
+	username,
+	jwtSecret string,
+	expiresAt time.Time,
+) (string, error) {
 	claims := &StaffClaims{
 		StaffID:    staffID,
 		HospitalID: hospitalID,
 		Username:   username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().AddDate(0, 0, 3)),
+			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
