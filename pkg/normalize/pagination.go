@@ -1,0 +1,24 @@
+package normalize
+
+import (
+	"hospital-middleware/pkg/query"
+)
+
+func PaginationValue(page, pageSize int) query.Pagination {
+	if page < 1 {
+		page = 1
+	}
+
+	if pageSize < 1 {
+		pageSize = 20
+	}
+
+	if pageSize > 100 {
+		pageSize = 100
+	}
+
+	return query.Pagination{
+		Page:     page,
+		PageSize: pageSize,
+	}
+}
